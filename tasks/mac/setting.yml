@@ -216,8 +216,6 @@
       pmset -b sleep 5
       pmset -a standbydelay 86400
       pmset -a autorestart 1
-      systemsetup -setcomputersleep Off > /dev/null
-      systemsetup -setrestartfreeze on
       pmset -a hibernatemode 0
 
       killall Dock
