@@ -50,6 +50,7 @@ function setup_ubuntu(){
 
 function setup_mac(){
     sudo -v
+    pmset noidle &
 
     if ! xcode-select -p &> /dev/null; then
         xcode-select --install
