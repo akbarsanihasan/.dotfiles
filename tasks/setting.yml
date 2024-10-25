@@ -1,0 +1,4 @@
+- name: common setting
+  ansible.builtin.shell: |
+      bat cache --build
+      zsh -c "source {{ HOME }}/.zshrc"

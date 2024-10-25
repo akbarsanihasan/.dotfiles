@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+files=(
+    "ags"
+    "astal"
+    "anyrun"
+    "fcitx-catppuccin"
+    "flameshot"
+    "gtk-theme"
+    "neovim"
+    "n_node"
+    "sddm-theme.zip"
+)
+
+for file in ${files[@]}; do
+    sudo rm -rf $HOME/$file
+done
+

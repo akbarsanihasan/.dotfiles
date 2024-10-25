@@ -1,0 +1,57 @@
+- name: Installing php using pacman
+  become: true
+  community.general.pacman:
+      update_cache: true
+      state: 'latest'
+      name:
+          - php
+          - php-cgi
+  when:
+      - ansible_distribution == ARCH
+  tags:
+      - php
+      - neovim
+
+- name: Installing php using apt
+  become: true
+  ansible.builtin.apt:
+      update_cache: true
+      allow_downgrade: true
+      state: 'latest'
+      name:
+          - php
+          - php-cli
+          - php-cgi
+  when:
+      - ansible_distribution == UBUNTU
+  tags:
+      - php
+      - neovim
+
+- name: Installing php using homebrew
+  community.general.homebrew:
+      state: 'latest'
+      name: php
+  when:
+      - ansible_distribution  == MAC
+  tags:
+      - php
+      - neovim
+
+- name: Installing composer package manager
+  become: true
+  ansible.builtin.shell: |
+      HASH=`curl -sS https://composer.github.io/installer.sig`
+
+      php -r "copy('https://getcomposer.org/installer', '/tmp/composer-setup.php');"
+      php -r "if (hash_file('sha384', '/tmp/composer-setup.php') === '$HASH') {
+          echo 'Installer verified';
+      } else {
+          echo 'Installer corrupt'; unlink('composer-setup.php');
+          exit();
+      } echo PHP_EOL;"
+
+      php /tmp/composer-setup.php --install-dir=/usr/local/bin --filename=composer
+  tags:
+      - php
+      - neovim

@@ -1,0 +1,64 @@
+- name: Installing theme packages using pacman
+  become: true
+  community.general.pacman:
+      update_cache: true
+      state: 'latest'
+      name:
+          - qt5ct
+          - qt6ct
+          - kvantum
+          - nwg-look
+  tags:
+      - hyprland
+
+- name: Ensure theme local directory exist
+  ansible.builtin.file:
+      dest: '{{ XDG_DATA_HOME }}/themes'
+      state: 'directory'
+  tags:
+      - hyprland
+
+- name: Ensure icon local directory exist
+  ansible.builtin.file:
+      dest: '{{ XDG_DATA_HOME }}/icons'
+      state: 'directory'
+  tags:
+      - hyprland
+
+- name: Ensure gtk-4.0 config exist
+  ansible.builtin.file:
+      dest: '{{ XDG_CONFIG_HOME }}/gtk-4.0'
+      state: 'directory'
+  tags:
+      - hyprland
+
+- name: Download catppuccin colloid theme
+  ansible.builtin.git:
+      repo: 'https://github.com/vinceliuice/Colloid-gtk-theme.git'
+      dest: '{{ HOME }}/gtk-theme'
+      depth: 1
+      update: true
+  tags:
+      - hyprland
+
+- name: Installing catppuccin colloid theme
+  ansible.builtin.shell: '{{ HOME }}/gtk-theme/install.sh -d {{ XDG_DATA_HOME }}/themes -t purple -c dark -s compact -l --tweaks catppuccin black'
+  tags:
+      - hyprland
+
+- name: Install papirus icon theme
+  ansible.builtin.shell: 'wget -qO- https://git.io/papirus-icon-theme-install | env DESTDIR="{{ XDG_DATA_HOME }}/icons" sh'
+  tags:
+      - hyprland
+
+- name: Applying gtk desktop interface theme
+  ansible.builtin.shell: |
+      gsettings set org.gnome.desktop.interface gtk-theme 'Colloid-Purple-Dark-Compact-Catppuccin'
+      gsettings set org.gnome.desktop.wm.preferences theme 'Colloid-Purple-Dark-Compact-Catppuccin'
+      gsettings set org.gnome.desktop.interface color-scheme prefer-dark 
+      gsettings set org.gnome.desktop.interface icon-theme 'Papirus-Dark'
+      gsettings set org.gnome.desktop.interface cursor-theme 'Adwaita'
+      gsettings set org.gnome.desktop.interface font-name 'Inter Display Semi-Bold 12'
+      gsettings set org.gnome.desktop.interface monospace-font-name 'JetBrainsMono Nerd Font 12'
+  tags:
+      - hyprland

@@ -1,0 +1,27 @@
+- name: Installing common package
+  community.general.homebrew:
+      state: 'latest'
+      name:
+          - tmux
+          - btop
+          - fastfetch
+          - bat
+          - eza
+          - fzf
+          - trash-cli
+          - less
+          - tldr
+          - man-db
+
+- name: Installing common app
+  community.general.homebrew:
+      state: 'latest'
+      install_options:
+          - build-from-source
+      name:
+          - stolendata-mpv
+          - kitty
+          - caffeine
+          - whoozle-android-file-transfer
+  tags:
+      - apps

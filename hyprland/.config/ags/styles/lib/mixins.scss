@@ -1,0 +1,10 @@
+@mixin window($bg-color: $crust, $box-shadow: $shadow) {
+    padding: $gap-xs;
+    margin: $gap-xs;
+    background-color: $bg-color;
+    box-shadow: $box-shadow;
+    border-radius: $radius-s;
+    border-width: 0.1rem;
+    border-style: solid;
+    border-color: $charcoal;
+}

@@ -1,0 +1,29 @@
+- name: Installing common package
+  become: true
+  community.general.pacman:
+      update_cache: true
+      state: 'latest'
+      name:
+          - tmux
+          - btop
+          - fastfetch
+          - bat
+          - eza
+          - fzf
+          - trash-cli
+          - less
+          - tldr
+          - man
+
+- name: Installing common app
+  become: true
+  community.general.pacman:
+      update_cache: true
+      state: 'latest'
+      name:
+          - mpv
+          - kitty
+          - android-file-transfer
+          - pavucontrol
+  tags:
+      - apps

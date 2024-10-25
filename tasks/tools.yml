@@ -1,0 +1,40 @@
+- name: Installing common tools using pacman
+  become: true
+  community.general.pacman:
+      update_cache: true
+      state: 'latest'
+      name:
+          - fd
+          - ripgrep
+          - awk
+          - jq
+  when: ansible_distribution == ARCH
+  tags:
+      - neovim
+
+- name: Installing common tools
+  become: true
+  ansible.builtin.apt:
+      update_cache: true
+      allow_downgrade: true
+      state: 'latest'
+      name:
+          - fd-find
+          - ripgrep
+          - jq
+          - gawk
+  when: ansible_distribution == UBUNTU
+  tags:
+      - neovim
+
+- name: Installing common tools using homebrew
+  community.general.homebrew:
+      state: 'latest'
+      name:
+          - fd
+          - ripgrep
+          - jq
+          - awk
+  when: ansible_distribution == MAC
+  tags:
+      - neovim

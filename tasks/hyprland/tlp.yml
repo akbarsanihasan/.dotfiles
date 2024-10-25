@@ -1,0 +1,46 @@
+- name: Installing tlp using pacman
+  become: true
+  community.general.pacman:
+      update_cache: true
+      state: 'latest'
+      name: tlp
+  tags:
+      - hyprland
+
+- name: Setting tlp
+  become: true
+  ini_file:
+      path: '/etc/tlp.conf'
+      create: 'yes'
+      option: '{{ item.option }}'
+      value: '{{ item.value }}'
+  loop:
+      - {option: 'INTEL_GPU_MIN_FREQ_ON_AC', value: '300'}
+      - {option: 'INTEL_GPU_MIN_FREQ_ON_BAT', value: '300'}
+      - {option: 'START_CHARGE_THRESH_BAT1', value: '75'}
+      - {option: 'STOP_CHARGE_THRESH_BAT1', value: '80'}
+      - {option: 'START_CHARGE_THRESH_BAT0', value: '75'}
+      - {option: 'STOP_CHARGE_THRESH_BAT0', value: '80'}
+      - {option: 'RESTORE_THRESHOLDS_ON_BAT', value: '1'}
+  tags:
+      - hyprland
+
+- name: Enable tlp using systemd
+  become: true
+  ansible.builtin.systemd:
+      name: 'tlp'
+      scope: 'system'
+      enabled: true
+  tags:
+      - hyprland
+
+- name: Setting udiskie rules
+  become: true
+  ansible.builtin.lineinfile:
+      path: '/etc/udev/rules.d/99-udisks2.rules'
+      state: 'present'
+      create: 'yes'
+      regexp: '^ENV{ID_FS_USAGE}=='
+      line: 'ENV{ID_FS_USAGE}=="filesystem|other|crypto", ENV{UDISKS_FILESYSTEM_SHARED}="1"'
+  tags:
+      - hyprland

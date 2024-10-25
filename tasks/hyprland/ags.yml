@@ -1,0 +1,81 @@
+- name: Installing ags dependencies
+  become: true
+  community.general.pacman:
+      update_cache: true
+      state: 'present'
+      name:
+          - vala
+          - gtk3
+          - gtk-layer-shell
+          - gobject-introspection
+          - gjs
+          - dart-sass
+  tags:
+      - hyprland
+
+- name: Download ags & astal package repository
+  ansible.builtin.git:
+      repo: 'https://github.com/aylur/{{ item.repo }}.git'
+      dest: '{{ HOME }}/{{ item.repo }}'
+      depth: 1
+      recursive: true
+      version: '{{ item.version }}'
+  loop:
+      - repo: astal
+        version: 'main'
+      - repo: ags
+        version: 'v2'
+  tags:
+      - hyprland
+
+- name: Building astal package
+  become: true
+  ansible.builtin.shell: |
+      cd {{ HOME }}/astal/lib/astal/io
+      meson setup --reconfigure --prefix /usr build
+      meson install -C build
+
+      cd {{ HOME }}/astal/lib/astal/gtk3
+      meson setup --reconfigure --prefix /usr build
+      meson install -C build
+
+      cd {{ HOME }}/astal/lib/apps
+      meson setup --reconfigure --prefix /usr build
+      meson install -C build
+
+      cd {{ HOME }}/astal/lib/battery
+      meson setup --reconfigure --prefix /usr build
+      meson install -C build
+
+      cd {{ HOME }}/astal/lib/bluetooth
+      meson setup --reconfigure --prefix /usr build
+      meson install -C build
+
+      cd {{ HOME }}/astal/lib/hyprland
+      meson setup --reconfigure --prefix /usr build
+      meson install -C build
+
+      cd {{ HOME }}/astal/lib/network
+      meson setup --reconfigure --prefix /usr build
+      meson install -C build
+
+      cd {{ HOME }}/astal/lib/tray
+      meson setup --reconfigure --prefix /usr build
+      meson install -C build
+
+      cd {{ HOME }}/astal/lang/gjs
+      meson setup --reconfigure --prefix /usr build
+      meson install -C build
+  tags:
+      - hyprland
+
+- name: installing ags package
+  become: true
+  ansible.builtin.shell: |
+      eval $(go env)
+
+      cd {{ HOME }}/ags/src
+      go install
+      mv $GOPATH/bin/ags /usr/bin/ags
+  tags:
+      - hyprland

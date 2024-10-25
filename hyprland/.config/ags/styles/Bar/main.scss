@@ -1,0 +1,10 @@
+.bar {
+    .container {
+        @include window;
+        margin: 0;
+        margin-bottom: $gap-s;
+        border-radius: 0;
+        border-width: 0;
+        border-bottom-width: 0.1rem;
+    }
+}

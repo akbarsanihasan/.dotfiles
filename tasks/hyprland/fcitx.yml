@@ -1,0 +1,30 @@
+- name: Installing fcitx package using pacman
+  become: true
+  community.general.pacman:
+      update_cache: true
+      state: 'latest'
+      name:
+          - fcitx5
+          - fcitx5-qt
+          - fcitx5-gtk
+          - fcitx5-anthy
+          - fcitx5-hangul
+          - fcitx5-configtool
+  tags:
+      - hyprland
+
+- name: Download fcitx catppuccin theme
+  ansible.builtin.git:
+      repo: 'https://github.com/catppuccin/fcitx5.git'
+      dest: '{{ HOME }}/fcitx-catppuccin'
+      depth: 1
+      recursive: true
+  tags:
+      - hyprland
+
+- name: Copy fcitx theme to approriate location
+  ansible.builtin.copy:
+      src: '{{ HOME }}/fcitx-catppuccin/src/catppuccin-mocha-mauve'
+      dest: '{{ XDG_DATA_HOME }}/fcitx5/themes/'
+  tags:
+      - hyprland

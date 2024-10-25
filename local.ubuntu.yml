@@ -1,0 +1,29 @@
+- hosts: localhost
+  gather_facts: true
+  vars_files:
+      - ./variables.yml
+  pre_tasks:
+      - import_tasks: ./setup_directory.yml
+      - import_tasks: ./setup_personal.yml
+      - import_tasks: ./setup_build.yml
+  tasks:
+      - import_tasks: ./tasks/config.yml
+
+      - import_tasks: ./tasks/node.yml
+      - import_tasks: ./tasks/php.yml
+      - import_tasks: ./tasks/go.yml
+      - import_tasks: ./tasks/rust.yml
+      - import_tasks: ./tasks/ocaml.yml
+
+      - import_tasks: ./tasks/ubuntu/packages.yml
+      - import_tasks: ./tasks/ubuntu/browser.yml
+
+      - import_tasks: ./tasks/tools.yml
+      - import_tasks: ./tasks/flameshot.yml
+      - import_tasks: ./tasks/font.yml
+      - import_tasks: ./tasks/neovim.yml
+      - import_tasks: ./tasks/git.yml
+      - import_tasks: ./tasks/zsh.yml
+
+      - import_tasks: ./tasks/setting.yml
+      - import_tasks: ./tasks/ubuntu/setting.yml

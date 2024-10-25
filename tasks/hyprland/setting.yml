@@ -1,0 +1,25 @@
+- name: Start xdg user dirs
+  ansible.builtin.systemd_service:
+      name: 'xdg-user-dirs-update'
+      scope: 'user'
+      enabled: true
+      force: true
+  tags:
+      - hyprland
+
+- name: Bookmark xdg user dirs
+  ansible.builtin.lineinfile:
+      path: '{{ XDG_CONFIG_HOME }}/gtk-3.0/bookmarks'
+      state: 'present'
+      create: 'yes'
+      line: 'file:///{{ HOME }}/{{ item }}'
+      regexp: 'file:///.*{{ item }}'
+  loop:
+      - Documents
+      - Downloads
+      - Pictures
+      - Public
+      - Templates
+      - Videos
+  tags:
+      - hyprland

@@ -1,0 +1,118 @@
+- name: Install common build package using pacman
+  become: true
+  community.general.pacman:
+      update_cache: true
+      state: 'latest'
+      name:
+          - base-devel
+          - make
+          - cmake
+          - meson
+          - ninja
+          - gettext
+          - git
+          - curl
+          - wget
+          - zip
+          - tar
+          - unzip
+          - unrar
+          - p7zip
+  when: ansible_distribution == ARCH
+  tags:
+      - node
+      - php
+      - ocaml
+      - rust
+      - neovim
+      - font
+      - browser
+      - hyprland
+
+- name: Install common build package using apt
+  become: true
+  ansible.builtin.apt:
+      update_cache: true
+      allow_downgrade: true
+      state: 'latest'
+      name:
+          - build-essential
+          - make
+          - cmake
+          - extra-cmake-modules
+          - meson
+          - ninja-build
+          - git
+          - curl
+          - wget
+          - zip
+          - tar
+          - unzip
+          - unrar
+          - p7zip
+  when: ansible_distribution == UBUNTU
+  tags:
+      - node
+      - php
+      - ocaml
+      - rust
+      - neovim
+      - font
+      - browser
+      - hyprland
+
+- name: Install common build package using homebrew
+  community.general.homebrew:
+      state: 'latest'
+      name:
+          - make
+          - cmake
+          - meson
+          - ninja
+          - git
+          - curl
+          - wget
+          - zip
+          - gnu-tar
+          - unzip
+          - rar
+          - p7zip
+  when: ansible_distribution == MAC
+  tags:
+      - node
+      - php
+      - ocaml
+      - rust
+      - neovim
+      - font
+      - browser
+      - hyprland
+
+- name: Installing stow using pacman
+  become: true
+  community.general.pacman:
+      update_cache: true
+      state: 'present'
+      name: 'stow'
+  when: ansible_distribution == ARCH
+  tags:
+      - hyprland
+
+- name: Installing stow using apt
+  become: true
+  ansible.builtin.apt:
+      update_cache: true
+      allow_downgrade: true
+      state: 'present'
+      name: 'stow'
+  when: ansible_distribution == UBUNTU
+  tags:
+      - hyprland
+
+- name: Installing stow using homebrew
+  community.general.homebrew:
+      state: 'present'
+      name: 'stow'
+  when: ansible_distribution == MAC
+  tags:
+      - hyprland

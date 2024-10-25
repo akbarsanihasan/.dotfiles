@@ -1,0 +1,5 @@
+#!/bin/env bash
+
+if [[ -z "$(pidof hyprlock)" ]]; then
+    pactl set-sink-mute @DEFAULT_SINK@ 1; hyprlock && loginctl unlock-session
+fi

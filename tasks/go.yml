@@ -1,0 +1,64 @@
+- name: Adding go ppa for apt repository
+  become: true
+  ansible.builtin.apt_repository:
+      repo: 'ppa:longsleep/golang-backports'
+      validate_certs: false
+  when:
+      - ansible_distribution == UBUNTU
+  tags:
+      - go
+      - neovim
+
+- name: Installing go using pacman
+  become: true
+  community.general.pacman:
+      update_cache: true
+      state: 'latest'
+      name: go
+  when:
+      - ansible_distribution == ARCH
+  tags:
+      - go
+      - neovim
+
+- name: Installing go using apt
+  become: true
+  ansible.builtin.apt:
+      update_cache: true
+      allow_downgrade: true
+      state: 'latest'
+      name: golang-go
+  when:
+      - ansible_distribution == UBUNTU
+  tags:
+      - go
+      - neovim
+
+- name: Install go using homebrew
+  community.general.homebrew:
+      state: 'latest'
+      name: go
+  when:
+      - ansible_distribution == MAC
+  tags:
+      - go
+      - neovim
+
+- name: Setting go environment
+  ansible.builtin.blockinfile:
+      path: '{{ HOME }}/{{ item }}'
+      state: 'present'
+      create: 'yes'
+      prepend_newline: true
+      marker: '#--------- {mark} ---------#'
+      marker_begin: 'StartGO'
+      marker_end: 'EndGO'
+      block: |
+          eval $(go env)
+          export PATH=$HOME/$GOTPATH/bin:$PATH
+  loop:
+      - .zshrc
+      - .bashrc
+  tags:
+      - go
+      - neovim

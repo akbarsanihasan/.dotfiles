@@ -1,0 +1,29 @@
+- name: Install nerdfont mono for linux
+  become: true
+  ansible.builtin.shell: |
+      curl -Lo {{ HOME }}/jetbrains.tar.xz https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.tar.xz 
+      curl -Lo {{ HOME }}/firacode.tar.xz https://github.com/ryanoasis/nerd-fonts/releases/latest/download/FiraCode.tar.xz
+
+      cd /usr/share/fonts 
+      mkdir -p JetBrainsMono
+      mkdir -p FiraCode
+
+      tar -xf {{ HOME }}/jetbrains.tar.xz --directory=JetBrainsMono
+      tar -xf {{ HOME }}/firacode.tar.xz --directory=FiraCode
+
+      rm {{ HOME }}/jetbrains.tar.xz
+      rm {{ HOME }}/firacode.tar.xz
+
+  when: ansible_distribution == ARCH or ansible_distribution == UBUNTU
+  tags:
+      - neovim
+
+- name: Installing nerdfont font using homebrew
+  community.general.homebrew:
+      state: 'latest'
+      name:
+          - font-fira-code-nerd-font
+          - font-jetbrains-mono-nerd-font
+  when: ansible_distribution == MAC
+  tags:
+      - neovim

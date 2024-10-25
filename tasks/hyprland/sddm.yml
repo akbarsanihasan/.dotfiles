@@ -1,0 +1,62 @@
+- name: Installing sddm dependencies using pacman
+  become: true
+  community.general.pacman:
+      update_cache: true
+      state: 'latest'
+      name:
+          - sddm
+          - qt6-svg
+          - qt6-declarative
+  tags:
+      - hyprland
+
+- name: Download catppuccin mocha sddm theme
+  ansible.builtin.shell: |
+      curl -s https://api.github.com/repos/catppuccin/sddm/releases/latest \
+      | grep -o '"browser_download_url": *"[^"]*"' \
+      | grep "mocha" \
+      | cut -d : -f 2,3 \
+      | xargs wget -O {{ HOME }}/sddm-theme.zip
+  args:
+      creates: sddm-theme.zip
+  tags:
+      - hyprland
+
+- name: Extract catppuccin sddm theme
+  become: true
+  ansible.builtin.unarchive:
+      src: '{{ HOME }}/sddm-theme.zip'
+      dest: '/usr/share/sddm/themes'
+
+- name: Set sddm autologin
+  become: true
+  ansible.builtin.ini_file:
+      path: '/etc/sddm.conf'
+      create: 'yes'
+      section: 'Autologin'
+      option: '{{ item.option }}'
+      value: '{{ item.value }}'
+  loop:
+      - {option: 'User', value: "{{ lookup('env', 'USER') }}"}
+      - {option: 'Session', value: 'hyprland'}
+  tags:
+      - hyprland
+
+- name: Set sddm theme
+  become: true
+  ansible.builtin.ini_file:
+      path: '/etc/sddm.conf'
+      create: 'yes'
+      section: 'Theme'
+      option: 'Current'
+      value: 'catppuccin-mocha'
+  tags:
+      - hyprland
+
+- name: Enable sddm with systemd
+  become: true
+  ansible.builtin.systemd:
+      enabled: true
+      name: 'sddm'
+  tags:
+      - hyprland
