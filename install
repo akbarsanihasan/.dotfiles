@@ -52,7 +52,7 @@ function setup_mac(){
     sudo -v
     pmset noidle &
 
-    if ! xcode-select -p &> /dev/null; then
+    if ! [[ -d "/Library/Developer/CommandlineTools" ]]; then
         xcode-select --install
     fi
 
